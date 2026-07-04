@@ -579,7 +579,7 @@ Use debug mode when:
 
 For a complete walkthrough of Playwright Codegen and Inspector features, watch:
 
-**YouTube:** https://youtu.be/HF3Og7o_xSA?si=fXyAArgY0qUaHWMV
+**YouTube:** [https://youtu.be/HF3Og7o_xSA?si=fXyAArgY0qUaHWMV](https://youtu.be/drW3w7ESaJo?si=J8-oWjy9WquYqaEk)
 
 * How to use it for rapid test creation
 * Its advantages and limitations
