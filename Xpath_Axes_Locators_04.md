@@ -371,3 +371,165 @@ Example:
 ```xpath
 //table/descendant::td
 ```
+
+### XPath Axes — VVIP Interview Questions + Answers
+## 1. What are XPath Axes?
+
+XPath Axes are used to navigate between related elements in the DOM. They help us locate an element based on its relationship with another element, such as its parent, child, ancestor, or descendant.
+
+Example:
+
+page.locator("//td[text()='Javascript']/parent::tr");
+
+Here we find Javascript and move to its parent <tr>.
+
+## 2. What is the difference between parent and ancestor?
+
+parent selects only the immediate parent of an element, while ancestor can select the parent, grandparent, or any element above it.
+
+Example:
+
+//td[text()='Javascript']/parent::tr
+
+gets the immediate <tr>.
+
+//td[text()='Javascript']/ancestor::table
+
+can move further up and get the <table>.
+
+This is a very important question.
+
+## 3. What is the difference between child and descendant?
+
+child selects only the direct children, while descendant selects children at any level, including grandchildren and deeper elements.
+
+Example:
+
+//tr/child::td
+
+gets direct <td> elements.
+
+//table/descendant::td
+
+gets <td> elements anywhere inside the table.
+
+## 4. What is the self axis?
+
+The self axis selects the current element itself.
+
+Example:
+
+//td[text()='Java']/self::td
+
+It stays on the same <td> element.
+
+Interview note: Know it, but don't overemphasize it. In real Playwright work, it's less commonly needed.
+
+## 5. Why would you use XPath Axes in automation?
+
+I use XPath axes when the target element does not have a reliable unique locator, but a related element does. I can locate the known element first and then navigate to the required element using its relationship.
+
+For example:
+
+<label>Username</label>
+<input>
+
+If the input doesn't have a useful ID, I can use the relationship between the label and input.
+
+This is the real-world reason for using axes.
+
+## 6. Give a real-world example of using parent axis.
+
+Suppose a table contains:
+
+<tr>
+    <td>John</td>
+    <td>Admin</td>
+    <td>Active</td>
+</tr>
+
+If Admin is unique but the row doesn't have a unique attribute:
+
+//td[text()='Admin']/parent::tr
+
+This finds the complete row.
+
+This is useful when working with tables where we identify a row using the text of one cell.
+
+## 7. Give a real-world example of using ancestor.
+
+Suppose:
+
+```
+<table>
+    <tr>
+        <td>John</td>
+    </tr>
+</table>
+```
+If John is easy to identify but the table isn't:
+
+//td[text()='John']/ancestor::table
+
+This moves from the cell upward and finds the table.
+
+I would use ancestor when I know something inside a container but need to locate the container itself.
+
+## 8. Can you combine XPath Axes?
+
+Yes.
+
+For example:
+
+//td[text()='Javascript']/parent::tr/td[4]
+
+This means:
+
+Find Javascript → move to its parent row → select the fourth cell.
+
+This is a very practical interview coding question.
+
+## 9. How do you use XPath Axes in Playwright?
+
+I use them inside page.locator().
+
+Example:
+
+const row = page.locator(
+    "//td[text()='Javascript']/parent::tr"
+);
+
+
+await expect(row).toHaveText(
+    "Learn JS Javascript Amit 500"
+);
+## 10. What is the difference between XPath Axes and normal XPath?
+
+Normal XPath can locate an element using its own attributes or text. XPath Axes allow us to locate an element based on its relationship with another element.
+
+For example:
+
+Normal XPath:
+
+//button[@id='login']
+
+Using an axis:
+
+//label[text()='Username']/following-sibling::input
+
+The second one finds the input based on its relationship with the label.
+
+## 11. Which XPath axes are most useful in real automation?
+
+For your interview, I'd say:
+
+The axes I commonly use or would use are parent, ancestor, child, descendant, and following-sibling. Among these, parent, ancestor, and following-sibling are especially useful when the target element itself doesn't have a good unique locator.
+
+XPath technically has 13 axes, including following-sibling, preceding-sibling, following, and preceding, but you don't need to memorize all of them for your current preparation.
+
+## 12. Is XPath Axes better than Playwright's built-in locators?
+```
+Not necessarily. I would first try Playwright's built-in locators such as getByRole(), getByLabel(), or getByTestId(). If those cannot uniquely identify the element, I may use XPath or XPath axes based on the DOM relationship.
+
+Playwright specifically recommends prioritizing user-facing locators over XPath where possible because XPath tied to DOM structure can be less resilient.
+```
