@@ -246,3 +246,137 @@ console.log(page.frames().length);
 * Chain `frameLocator()` for nested iframes.
 * Use assertions to validate interactions.
 * `page.frames().length` returns the total number of frames on the page.
+
+🔥 Playwright Iframes --- VVIP Interview Questions
+------------------------------------------------
+
+### Q1. What is an iframe, and why can't we directly use `page.locator()` for elements inside it?
+
+**Answer:** An iframe is a webpage embedded inside another webpage. Its DOM is a separate document, so we need to enter the frame context before locating elements inside it. In Playwright, `frameLocator()` is the usual approach.
+
+* * * * *
+
+### Q2. How do you handle an iframe in Playwright?
+
+const frame = page.frameLocator("#outerFrame");
+
+await frame.locator("#username").fill("Aniket");
+
+`frameLocator()` returns a `FrameLocator`, which lets you locate and interact with elements inside the iframe.
+
+* * * * *
+
+### Q3. What is the difference between `page.frames()` and `page.frameLocator()`? ⭐⭐⭐
+
+**Answer:**
+
+-   `page.frames()` → returns an array of all `Frame` objects attached to the page.
+-   `page.frameLocator()` → creates a `FrameLocator` used to locate/interact with elements inside a specific iframe.
+
+Example:
+
+page.frames()
+
+vs.
+
+page.frameLocator("#outerFrame")
+
+* * * * *
+
+### Q4. Does `page.frames()` include the main page?
+
+**Answer:** **Yes.**
+
+For:
+
+Main Page
+
+ └── Outer iframe
+
+      └── Inner iframe
+
+`page.frames().length` would be **3**:
+
+1.  Main frame
+2.  Outer frame
+3.  Inner frame
+
+Playwright's `frames()` returns all frames attached to the page.
+
+* * * * *
+
+### Q5. How do you handle a nested iframe? ⭐⭐⭐
+
+Use chained `frameLocator()`:
+
+const innerFrame = page
+
+    .frameLocator("#outerFrame")
+
+    .frameLocator("#innerFrame");
+
+await innerFrame.locator("#innerName").fill("Aniket");
+
+This is one of the **most important practical iframe questions**.
+
+* * * * *
+
+### Q6. What is the difference between `Frame` and `FrameLocator`? ⭐⭐⭐
+
+**Frame** represents an actual frame in Playwright and provides APIs such as `locator()`, `childFrames()`, etc.
+
+**FrameLocator** is a locator-oriented abstraction used to locate elements inside an iframe.
+
+In normal Playwright test automation, `frameLocator()` is generally the simpler approach for interacting with iframe elements.
+
+* * * * *
+
+### Q7. What happens if multiple iframes match the `frameLocator()` selector?
+
+**Answer:** `FrameLocator` is **strict**. If the selector matches multiple frames, an operation can throw a strictness violation. Therefore, make the iframe locator unique or explicitly select the required iframe.
+
+* * * * *
+
+### Q8. Can you use Playwright's built-in locators inside an iframe?
+
+**Yes.** ⭐
+
+For example:
+
+const frame = page.frameLocator("#outerFrame");
+
+await frame.getByRole("button", { name: "Login" }).click();
+
+You can use `getByRole()`, `getByText()`, `getByLabel()`, `getByPlaceholder()`, etc. through a `FrameLocator`.
+
+* * * * *
+
+### Q9. How would you locate an element if the iframe has a dynamic ID?
+
+Don't depend on the dynamic ID. Use a **stable attribute** such as:
+
+<iframe title="Payment Frame">
+
+Then:
+
+const frame = page.frameLocator('iframe[title="Payment Frame"]');
+
+Or use another stable attribute/name available in the application.
+
+**Interview point:** choose a stable locator rather than hardcoding a dynamic value.
+
+* * * * *
+
+### Q10. ⭐⭐⭐ What is the best approach for handling iframes in a real Playwright framework?
+
+**Answer:**
+
+> I prefer `frameLocator()` because it allows me to directly locate and interact with elements inside the iframe without manually switching contexts. For nested iframes, I chain `frameLocator()`. I use `page.frames()` when I specifically need to inspect or work with the frame objects themselves.
+
+Example:
+
+const outerFrame = page.frameLocator("#outerFrame");
+
+const innerFrame = outerFrame.frameLocator("#innerFrame");
+
+await innerFrame.locator("#innerName").fill("Aniket");
