@@ -318,3 +318,271 @@ else{
 - Use `option:checked` to work with selected options in a multi-select dropdown.
 - Use `locator("option")` to count or print all dropdown options.
 - Use a `Set` to check for duplicate dropdown values.
+
+VVIP Dropdown Interview Questions + Answers
+-------------------------------------------
+
+### 1\. How do you handle a dropdown in Playwright?
+
+For a native HTML `<select>` dropdown, I use `selectOption()`.
+
+await page.locator("#country").selectOption({ label: "India" });
+
+It allows selection by **label, value, or index**.
+
+* * * * *
+
+### 2\. How can you select an option from a dropdown?
+
+We can select it in three common ways:
+
+// By label
+
+await dropdown.selectOption({ label: "India" });
+
+// By value
+
+await dropdown.selectOption({ value: "india" });
+
+// By index
+
+await dropdown.selectOption({ index: 2 });
+
+* * * * *
+
+### 3\. What is the difference between selecting by label and value?
+
+Consider:
+
+<option value="ind">India</option>
+
+Here:
+
+-   `India` → visible **label**
+-   `ind` → HTML **value**
+
+So:
+
+await dropdown.selectOption({ label: "India" });
+
+selects using visible text, while:
+
+await dropdown.selectOption({ value: "ind" });
+
+selects using the `value` attribute.
+
+* * * * *
+
+### 4\. Can Playwright handle multi-select dropdowns?
+
+**Yes.**
+
+If the `<select>` supports multiple selections, we can pass multiple values:
+
+await dropdown.selectOption([
+
+    "red",
+
+    "green",
+
+    "blue"
+
+]);
+
+* * * * *
+
+### 5\. How do you verify that an option is selected?
+
+For a single-select dropdown:
+
+await expect(dropdown).toHaveValue("india");
+
+For a multi-select dropdown:
+
+await expect(dropdown).toHaveValues([
+
+    "red",
+
+    "green"
+
+]);
+
+* * * * *
+
+### 6\. How do you count the options in a dropdown?
+
+I locate the `option` elements and use `count()`:
+
+let options = dropdown.locator("option");
+
+let count = await options.count();
+
+Important: `dropdown.count()` counts the dropdown itself, **not its options**.
+
+* * * * *
+
+### 7\. How do you get all options from a dropdown?
+
+I locate all `option` elements and iterate through them:
+
+let options = dropdown.locator("option");
+
+let count = await options.count();
+
+for(let i = 0; i < count; i++) {
+
+    console.log(await options.nth(i).innerText());
+
+}
+
+* * * * *
+
+### 8\. How do you select the third option from a dropdown?
+
+await dropdown.selectOption({ index: 2 });
+
+Playwright uses **0-based indexing**, so index `2` represents the third option.
+
+* * * * *
+
+⭐ Very Important Interview Questions
+------------------------------------
+
+### 9\. What is the difference between a native dropdown and a custom dropdown?
+
+A **native dropdown** uses the HTML `<select>` element:
+
+<select>
+
+    <option>India</option>
+
+</select>
+
+For this, I use:
+
+selectOption()
+
+A **custom dropdown** may use elements like `div`, `button`, and `li`. For that, I use normal Playwright locators and click actions.
+
+For example:
+
+await page.getByRole("button", { name: "Select Country" }).click();
+
+await page.getByText("India").click();
+
+* * * * *
+
+### 10\. Can we use `selectOption()` for a custom dropdown?
+
+**No.**
+
+`selectOption()` is intended for native HTML `<select>` elements.
+
+For a custom dropdown, I interact with the dropdown using normal locators, for example:
+
+await dropdown.click();
+
+await page.getByText("India").click();
+
+* * * * *
+
+### 11\. Which method would you prefer: selecting by index or value?
+
+I prefer **value or label** over index because index depends on the order of options.
+
+For example:
+
+await dropdown.selectOption({ value: "india" });
+
+is generally more stable than:
+
+await dropdown.selectOption({ index: 2 });
+
+If the developer changes the option order, an index-based locator can select the wrong option.
+
+* * * * *
+
+### 12\. How do you verify whether a particular option exists?
+
+I would locate all `option` elements, iterate through them, and compare their text.
+
+let options = dropdown.locator("option");
+
+let count = await options.count();
+
+let found = false;
+
+for(let i = 0; i < count; i++) {
+
+    let text = (await options.nth(i).innerText()).trim();
+
+    if(text === "India") {
+
+        found = true;
+
+        break;
+
+    }
+
+}
+
+expect(found).toBe(true);
+
+* * * * *
+
+### 13\. How do you get the selected value from a dropdown?
+
+For a native dropdown:
+
+let value = await dropdown.inputValue();
+
+For example, if India is selected and its value is `india`, it returns:
+
+india
+
+* * * * *
+
+### 14\. How do you verify multiple selected options?
+
+For a multi-select dropdown:
+
+await expect(dropdown).toHaveValues([
+
+    "red",
+
+    "green",
+
+    "blue"
+
+]);
+
+This verifies the selected option values.
+
+* * * * *
+
+### 15\. How would you handle a dropdown whose options are dynamically loaded?
+
+First, I would interact with the dropdown and then locate the required option after it becomes available.
+
+For example, for a custom dropdown:
+
+await dropdown.click();
+
+await page.getByText("India").click();
+
+If necessary, I can also use Playwright's built-in waiting through locators rather than adding unnecessary hard waits.
+
+* * * * *
+
+🔥 One scenario-based question you should definitely prepare
+------------------------------------------------------------
+
+### 16\. Interviewer: "Suppose there are 10 options in a dropdown and tomorrow the developer changes their order. How would you make your test stable?"
+
+**Answer:**
+
+> I would avoid selecting the option by index because the order can change. I would preferably select it using a stable value or label.
+
+Example:
+
+await dropdown.selectOption({ value: "india" });
