@@ -350,7 +350,7 @@ Waits until the button becomes clickable.
 | ------------------------------------------------------------------------ | ----------------------------------------------- |
 | Waits until an action can be performed.                                  | Waits until an expected condition becomes true. |
 | Used with actions like `click()`, `fill()`, `check()`, `selectOption()`. | Used with `expect()` assertions.                |
-| Default: **30 seconds**                                                  | Default: **5 seconds**                          |
+| Default: **0 seconds** (rely on 30 sec test titmeout)                    | Default: **5 seconds**                          |
 | Supports custom timeout.                                                 | Supports custom timeout.                        |
 
 ---
