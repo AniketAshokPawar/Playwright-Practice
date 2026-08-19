@@ -407,7 +407,7 @@ Playwright automatically waits for elements or page conditions before performing
 
 ### 2. What is the default action timeout?
 
-**30 seconds**
+**0 seconds.** rely on test default timeout of 30 sec.
 
 ---
 
