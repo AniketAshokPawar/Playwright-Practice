@@ -16,7 +16,7 @@ Playwright waits only as long as needed and proceeds immediately once the condit
 
 # Default Timeouts
 
-## Action Timeout
+## Test Timeout
 
 * **Default:** 30 seconds
 
