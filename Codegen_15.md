@@ -583,3 +583,182 @@ For a complete walkthrough of Playwright Codegen and Inspector features, watch:
 
 * How to use it for rapid test creation
 * Its advantages and limitations
+
+Q1 ⭐⭐⭐⭐⭐ What is Playwright Codegen?
+------------------------------------
+
+### Interview answer:
+
+> **Playwright Codegen is a built-in test generation tool that records user interactions with a web application and automatically generates Playwright code. It is useful for quickly creating initial test scripts, discovering locators, and learning Playwright syntax. However, the generated code should be reviewed and refactored before using it in a production framework.**
+
+Example:
+```
+npx playwright codegen https://example.com
+```
+As you interact with the browser, Codegen generates the corresponding Playwright code.
+
+* * * * *
+
+Q2 ⭐⭐⭐⭐⭐ How do you launch Playwright Codegen?
+----------------------------------------------
+
+### Answer:
+```
+npx playwright codegen
+```
+Or directly with a website:
+```
+npx playwright codegen https://example.com
+```
+You can also specify a browser:
+```
+npx playwright codegen --browser firefox
+```
+**Interview one-liner:**
+
+> We can launch Codegen using `npx playwright codegen`, optionally followed by the application URL.
+
+* * * * *
+
+Q3 ⭐⭐⭐⭐⭐ Does Codegen generate production-ready code?
+-----------------------------------------------------
+
+### Answer:
+
+> **Not necessarily. Codegen provides a good starting point, but generated code should be reviewed and refactored. In a real framework, I would remove duplication, improve readability, create reusable locators and methods, and organize the code according to the framework design or POM.**
+
+This is a very common practical question.
+
+* * * * *
+
+Q4 ⭐⭐⭐⭐⭐ What is the difference between Codegen and Debug mode?
+---------------------------------------------------------------
+
+### Answer:
+
+> **Codegen is mainly used to record browser interactions and generate test code. Debug mode is used to execute an existing test interactively and investigate failures or understand test execution.**
+
+| Codegen | Debug Mode |
+| --- | --- |
+| Generates code | Runs existing code |
+| Records browser interactions | Executes test step by step |
+| Useful for creating initial scripts and locators | Useful for troubleshooting |
+| `npx playwright codegen` | `npx playwright test --debug` |
+
+* * * * *
+
+Q5 ⭐⭐⭐⭐⭐ How do you debug a Playwright test?
+--------------------------------------------
+
+### Answer:
+
+One common way is:
+```
+npx playwright test --debug
+```
+This opens the **Playwright Inspector** and allows us to step through the test.
+
+To debug a specific file:
+```
+npx playwright test tests/example.spec.ts --debug
+```
+You can also run a specific test location:
+```
+npx playwright test example.spec.ts:10 --debug
+```
+While debugging, you can inspect locators, view actionability information, and step through test execution.
+
+* * * * *
+
+Q6 ⭐⭐⭐⭐⭐ What is `page.pause()` and when would you use it?
+----------------------------------------------------------
+
+### Answer:
+
+> **`page.pause()` pauses the Playwright test at a specific point so that we can inspect the page and debug the test interactively. After inspection, we can click Resume to continue execution.**
+
+Example:
+```
+await page.goto("https://example.com");
+
+await page.pause();
+
+await page.getByRole("link").click();
+```
+Flow:
+```
+Test starts
+
+    ↓
+
+page.pause()
+
+    ↓
+
+⏸ Execution pauses
+
+    ↓
+
+Inspect page / locators
+
+    ↓
+
+▶ Resume
+
+    ↓
+
+Test continues
+```
+It is especially useful when you want to debug a particular point without stepping through the entire test. `page.pause()` requires headed mode.
+
+* * * * *
+
+Q7 ⭐⭐⭐⭐⭐ What is Playwright Inspector?
+--------------------------------------
+
+### Answer:
+
+> **Playwright Inspector is a GUI debugging tool that allows us to inspect and step through Playwright test execution. We can pause, resume, step through actions, inspect locators, edit locators live, and view actionability logs.**
+
+It can be opened when running tests in debug mode:
+```
+npx playwright test --debug
+```
+* * * * *
+
+Q8 ⭐⭐⭐⭐ What is Pick Locator?
+-----------------------------
+
+### Answer:
+
+> **Pick Locator is a feature in Codegen or the Playwright Inspector that allows us to select an element from the browser and see the locator Playwright generates for that element. We can then copy or edit that locator.**
+
+This is useful when:
+
+-   A locator is failing
+-   We need a better locator
+-   We want to verify which element the locator matches
+
+Playwright attempts to generate resilient locators and, if necessary, refines them to uniquely identify the target element.
+
+* * * * *
+
+Q9 ⭐⭐⭐⭐ Can you edit locators while debugging?
+----------------------------------------------
+
+### Answer:
+
+**Yes.**
+
+> While the test is paused in the Playwright Inspector, we can edit the locator in the locator field and immediately see the matching element highlighted in the browser.
+
+This is useful for troubleshooting incorrect or unstable locators.
+
+* * * * *
+
+Q10 ⭐⭐⭐⭐⭐ Scenario: Your test fails because a locator cannot find the expected element. How would you debug it?
+---------------------------------------------------------------------------------------------------------------
+
+### Answer:
+
+> First, I would run the test in debug mode using `--debug` or use `page.pause()` near the failing step. Then I would use Pick Locator to inspect the element and verify whether my locator matches the correct element. I can also edit the locator live in the Inspector. Finally, I would check the actionability logs to understand whether the problem is locator-related or whether the element is not visible, enabled, stable, or otherwise actionable.
