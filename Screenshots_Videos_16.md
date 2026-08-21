@@ -425,3 +425,22 @@ video: 'on-first-retry'
 ```
 
 depending on whether the team wants failure recordings or recordings only for flaky test retries.
+
+### Q1 ⭐⭐⭐⭐⭐ What is the difference between `page.screenshot()` and `locator.screenshot()`?
+
+**Answer:**\
+`page.screenshot()` captures the page, while `locator.screenshot()` captures only the specific element matched by the locator.
+
+* * * * *
+
+### Q2 ⭐⭐⭐⭐⭐ What is the difference between a viewport screenshot and a full-page screenshot?
+
+**Answer:**
+
+await page.screenshot();
+
+By default captures the **current viewport**.
+
+await page.screenshot({ fullPage: true });
+
+Captures the **entire scrollable webpage**.
