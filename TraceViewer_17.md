@@ -449,3 +449,140 @@ trace:'on-first-retry'
 **Video → Screen Recording**
 
 **Trace → Complete Test History (Time Machine)**
+
+Trace Viewer --- VVIP Interview Q&A
+---------------------------------
+
+### Q1 ⭐⭐⭐⭐⭐ What is Playwright Trace Viewer?
+
+**Answer:**
+
+> Trace Viewer is a debugging tool in Playwright that allows us to inspect a test execution step by step. It provides information such as actions, screenshots, DOM snapshots, network requests, console logs, errors, and execution timing.
+
+**Interview example:**
+
+> If a test fails in CI and I cannot reproduce it locally, I can use the trace to go back through the test execution and understand what happened at the failing step.
+
+* * * * *
+
+### Q2 ⭐⭐⭐⭐⭐ How do you enable Trace Viewer?
+
+**Answer:**
+
+In `playwright.config.ts`:
+
+```
+use: {
+    trace: 'on-first-retry'
+}
+```
+
+Or from command line:
+
+```
+npx playwright test --trace on
+```
+
+Then the trace can be opened through the HTML report or:
+
+```
+npx playwright show-trace trace.zip
+```
+
+For CI, `on-first-retry` is commonly recommended because it collects the trace when a failed test is retried instead of tracing every normal run.
+
+* * * * *
+
+### Q3 ⭐⭐⭐⭐⭐ Difference between `on`, `retain-on-failure`, and `on-first-retry`?
+
+**Answer:**
+
+| Mode | Behavior |
+| --- | --- |
+| `on` | Records and keeps trace for **every run** |
+| `retain-on-failure` | Records every run but keeps only **failed runs** |
+| `on-first-retry` | Records and keeps only the **first retry** |
+
+Very important scenario:
+
+```
+retries: 1
+
+Attempt 1 → FAIL
+Retry 1  → PASS
+```
+
+With:
+
+```
+trace: 'retain-on-failure'
+```
+
+**The failed first run's trace is kept**, even though the retry passed.
+
+With:
+
+```
+trace: 'on-first-retry'
+```
+
+**The retry is traced**, because the retry itself is the first retry.
+
+This distinction is explicitly documented by Playwright.
+
+* * * * *
+
+### Q4 ⭐⭐⭐⭐⭐ What information can you inspect in Trace Viewer?
+
+**Answer:**
+
+The important ones to mention:
+
+-   **Timeline** --- sequence of test actions
+-   **DOM snapshots** --- page/DOM state around actions
+-   **Screenshots** --- visual state during execution
+-   **Action details** --- locator, action, timing, etc.
+-   **Network** --- requests/responses
+-   **Console** --- browser console information
+-   **Source code** --- corresponding test source
+
+So in an interview:
+
+> "I can use Trace Viewer not just to see that an action failed, but to investigate the page state, DOM, network and console information around that failure."
+
+* * * * *
+
+### Q5 ⭐⭐⭐⭐⭐ Trace Viewer vs Screenshot vs Video?
+
+**Answer:**
+
+Think of it like this:
+
+```
+Screenshot → What did the screen look like?
+
+Video      → What happened visually over time?
+
+Trace      → What happened + debugging information about why?
+```
+
+For example, if a button click fails:
+
+**Screenshot:**\
+You can see the button/page.
+
+**Video:**\
+You can watch what happened before the failure.
+
+**Trace:**\
+You can inspect the action, DOM snapshot, locator information, timing, network activity, console information, etc.
+
+Therefore, for **CI debugging**, Trace Viewer is generally more powerful than relying only on screenshots or videos.
+
+* * * * *
+
+### Q6 ⭐⭐⭐⭐⭐ Real-world scenario: A test fails in CI but passes locally. How would you debug it?
+
+**Answer --- this is the one I'd REALLY prepare:**
+
+> "First, I would check the Playwright HTML report to identify the failed test. If a trace was captured, I would open the trace and inspect the failing action. I would check the action details, DOM snapshot, screenshot, network requests and console errors around that step. Based on that information, I would determine whether the issue is a locator problem, timing issue, application failure, network problem, or an actual test defect."
