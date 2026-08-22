@@ -444,3 +444,138 @@ By default captures the **current viewport**.
 await page.screenshot({ fullPage: true });
 
 Captures the **entire scrollable webpage**.
+
+📸🎥 Screenshots & Videos --- 5 VVIP Questions
+============================================
+
+### Q1 ⭐⭐⭐⭐⭐
+
+**What are the different screenshot modes available in `playwright.config.ts`?**
+
+**Answer:**
+
+```
+use: {
+    screenshot: 'only-on-failure'
+}
+```
+
+The main modes are:
+
+-   `'off'` → no automatic screenshots
+-   `'on'` → screenshot after every test
+-   `'only-on-failure'` → screenshot after a failed test
+-   `'on-first-failure'` → screenshot after the test's first failure
+
+**Interview tip:** For CI, `only-on-failure` is commonly useful because it avoids unnecessary screenshots from successful tests.
+
+* * * * *
+
+### Q2 ⭐⭐⭐⭐⭐
+
+**What are the video recording modes in Playwright, and which one would you use in CI?**
+
+**Answer:**
+
+```
+use: {
+    video: 'retain-on-failure'
+}
+```
+
+Important modes:
+
+-   `'off'` → no video
+-   `'on'` → video for every test
+-   `'retain-on-failure'` → records every run but keeps videos only for failed runs
+-   `'on-first-retry'` → records only the first retry
+
+For CI, I would commonly use:
+
+```
+video: 'retain-on-failure'
+```
+
+because it provides videos for debugging failures without retaining videos from successful runs.
+
+* * * * *
+
+### Q3 ⭐⭐⭐⭐⭐
+
+**What is the difference between `retain-on-failure` and `on-first-retry` for video?**
+
+**Answer:**
+
+```
+retain-on-failure
+→ Records every run
+→ Keeps video only if that run fails
+
+on-first-retry
+→ Records only the first retry
+→ Keeps that retry's video regardless of whether retry passes or fails
+```
+
+Example with `retries: 1`:
+
+```
+Test passes first time
+→ retain-on-failure: no video retained
+→ on-first-retry: no video
+
+First attempt fails → retry happens
+→ retain-on-failure: failed first-run video retained
+→ on-first-retry: retry video recorded
+
+Retry passes
+→ retain-on-failure: first failed-run video remains
+→ on-first-retry: retry video remains
+```
+
+This distinction is **very VVIP**. The current Playwright docs explicitly state that `retain-on-failure` keeps a failed run's video even if a later retry passes.
+
+* * * * *
+
+### Q4 ⭐⭐⭐⭐⭐
+
+**Where are automatically generated screenshots and videos stored?**
+
+**Answer:**
+
+By default, they are stored in the Playwright **test output directory**, typically:
+
+```
+test-results/
+```
+
+For example:
+
+```
+test-results/
+   Login-Test/
+      video.webm
+      test-failed-1.png
+```
+
+The exact folder/name can vary based on the test and configuration.
+
+* * * * *
+
+### Q5 ⭐⭐⭐⭐⭐ Scenario
+
+**Your Playwright suite has 500 tests running in CI. You want screenshots and videos for failures, but you don't want to keep unnecessary artifacts from successful tests. What configuration would you choose?**
+
+**Answer:**
+
+For screenshots:
+
+```
+use: {
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure'
+}
+```
+
+I would choose this because:
+
+> **Screenshots are captured only for failed tests, while videos are retained only for failed runs. This gives us useful debugging evidence while avoiding unnecessary artifacts from successful tests.**
